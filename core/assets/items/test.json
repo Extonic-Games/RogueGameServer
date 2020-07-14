@@ -1,0 +1,18 @@
+[
+	{
+		"itemAttributes": 2,
+		"itemUseType": 8,
+		"itemUseTypeValue": 20,
+		"itemTypeID": "stick",
+		"itemShortDesc": "Just an ordinary stick",
+		"itemValue": 50
+	},
+	{
+		"itemAttributes": 2,
+		"itemUseType": 16,
+		"itemUseTypeValue": 20,
+		"itemTypeID": "player-idle",
+		"itemShortDesc": "Just an ordinary stick 2",
+		"itemValue": 50
+	}
+]

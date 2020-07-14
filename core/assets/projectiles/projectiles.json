@@ -1,0 +1,14 @@
+[
+{
+  "name": "Test",
+  "damage": 5,
+  "maxDamage": 15,
+  "lifespan": 10,
+},
+  {
+    "name": "OctoShot",
+    "damage": 10,
+    "maxDamage": 40,
+    "lifespan": 10,
+  }
+]

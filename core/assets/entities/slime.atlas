@@ -1,0 +1,104 @@
+
+slime.png
+size: 1024,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+angryblob_idle
+  rotate: false
+  xy: 874, 146
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+angryblob_walk
+  rotate: false
+  xy: 874, 146
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: 0
+angryblob_walk
+  rotate: false
+  xy: 874, 48
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: 1
+nightcrawler_walk
+  rotate: false
+  xy: 2, 2
+  size: 240, 240
+  orig: 240, 240
+  offset: 0, 0
+  index: 0
+nightcrawler_idle
+  rotate: false
+  xy: 2, 2
+  size: 240, 240
+  orig: 240, 240
+  offset: 0, 0
+  index: -1
+nightcrawler_walk
+  rotate: false
+  xy: 244, 2
+  size: 240, 240
+  orig: 240, 240
+  offset: 0, 0
+  index: 2
+octo_idle
+  rotate: false
+  xy: 486, 50
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+octo_walk
+  rotate: false
+  xy: 486, 50
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: 0
+octo_walk
+  rotate: false
+  xy: 680, 50
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: 1
+slime_walk
+  rotate: false
+  xy: 972, 226
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+slime_walk
+  rotate: false
+  xy: 972, 226
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+slime_walk
+  rotate: false
+  xy: 486, 32
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+slime_walk
+  rotate: false
+  xy: 972, 208
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+slime_idle
+  rotate: false
+  xy: 972, 208
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

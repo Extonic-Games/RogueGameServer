@@ -1,0 +1,30 @@
+import isTarget?: "me.extain.server.Behaviors.IsTargetCondition"
+import isHealth?: "me.extain.server.Behaviors.IsMyHealthCondition"
+import chase: "me.extain.server.Behaviors.ChaseTask"
+import shoot: "me.extain.server.Behaviors.ShootTask"
+import cShoot: "me.extain.server.Behaviors.CircleShotTask"
+
+subtree name: "shootTowardsPlayer"
+    sequence
+        chase
+        shoot projectile:"OctoShot" shotSpeed:40 shootTimer:10
+
+
+
+subtree name: "amilow?"
+    sequence
+        isHealth? health:10
+
+
+subtree name: "lowOnHP"
+    sequence
+        isTarget?
+        cShoot projectile:"Test" shotSpeed:40 shootTimer:10
+
+
+root
+    dynamicGuardSelector
+        ($amilow?) $lowOnHP
+        (isTarget?) $shootTowardsPlayer
+        () chase
+
