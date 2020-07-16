@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import me.extain.server.ServerPlayer;
 import me.extain.server.item.Item;
@@ -63,6 +64,7 @@ public class NetworkHandler {
         kryo.register(Array.class);
         kryo.register(Object[].class);
         kryo.register(InventoryUpdatePacket.class);
+        kryo.register(HashMap.class);
     }
 
 }

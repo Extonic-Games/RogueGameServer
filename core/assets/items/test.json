@@ -1,17 +1,34 @@
 [
 	{
 		"itemAttributes": 2,
+		"weaponAttributes": 4,
 		"itemUseType": 8,
 		"itemUseTypeValue": 20,
 		"itemTypeID": "stick",
 		"itemShortDesc": "Just an ordinary stick",
+		"itemValue": 50,
+		"weaponStats": {
+			"maxDamage": 10,
+			"damage": 5,
+			"attackSpeed": 2,
+			"projectile": "Test"
+		}
+	},
+	{
+		"itemAttributes": 2,
+		"weaponAttributes": 1,
+		"itemUseType": 16,
+		"itemUseTypeValue": 20,
+		"itemTypeID": "player-idle",
+		"itemShortDesc": "Only a test item",
 		"itemValue": 50
 	},
 	{
 		"itemAttributes": 2,
-		"itemUseType": 16,
+		"weaponAttributes": 4,
+		"itemUseType": 8,
 		"itemUseTypeValue": 20,
-		"itemTypeID": "player-idle",
+		"itemTypeID": "stick2",
 		"itemShortDesc": "Just an ordinary stick 2",
 		"itemValue": 50
 	}

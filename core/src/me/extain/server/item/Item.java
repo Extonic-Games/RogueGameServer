@@ -23,15 +23,33 @@ public class Item extends Image {
         }
     }
 
+    public enum WeaponAttribute {
+        NONE(1),
+        SWORD(2),
+        STAFF(4),
+        BOW(8);
+
+        private int attribute;
+
+        WeaponAttribute(int attribute) {
+            this.attribute = attribute;
+        }
+
+        public int getValue() {
+            return attribute;
+        }
+    }
+
     public enum ItemUseType {
         ITEM_RESTORE_HEALTH(1),
         ITEM_RESTORE_MP(2),
         ITEM_DAMAGE(4),
         WEAPON(8),
-        ARMOR_HELMET(16),
-        ARMOR_CHEST(32),
-        ARMOR_FEET(64),
-        QUEST_ITEM(128);
+        ABILITY(16),
+        ARMOR_HELMET(32),
+        ARMOR_CHEST(64),
+        ARMOR_FEET(128),
+        QUEST_ITEM(256);
 
         private int itemUseType;
 
@@ -45,11 +63,13 @@ public class Item extends Image {
     }
 
     private int itemAttributes;
+    private int weaponAttributes;
     private int itemUseType;
     private int itemUseTypeValue;
     private String itemTypeID;
     private String itemShortDesc;
     private int itemValue;
+    private WeaponStats weaponStats;
 
     private Body body;
 
@@ -57,14 +77,17 @@ public class Item extends Image {
 
     private float scale = 1;
 
-    public Item(TextureRegion textureRegion, int itemAttributes, String itemTypeID, int itemUseType, int itemUseTypeValue, int itemValue) {
+
+    public Item(TextureRegion textureRegion, int itemAttributes, int weaponAttributes, String itemTypeID, int itemUseType, int itemUseTypeValue, int itemValue, WeaponStats weaponStats) {
         super(textureRegion);
 
         this.itemTypeID = itemTypeID;
         this.itemAttributes = itemAttributes;
+        this.weaponAttributes = weaponAttributes;
         this.itemUseType = itemUseType;
         this.itemUseTypeValue = itemUseTypeValue;
         this.itemValue = itemValue;
+        this.weaponStats = weaponStats;
     }
 
     public Item() {
@@ -76,10 +99,12 @@ public class Item extends Image {
 
         this.itemTypeID = item.getItemTypeID();
         this.itemAttributes = item.getItemAttributes();
+        this.weaponAttributes = item.getWeaponAttributes();
         this.itemUseType = item.getItemUseType();
         this.itemUseTypeValue = item.getItemUseTypeValue();
         this.itemShortDesc = item.getItemShortDesc();
         this.itemValue = item.getItemValue();
+        this.weaponStats = item.getWeaponStats();
     }
 
     public int getItemUseTypeValue() {
@@ -112,6 +137,14 @@ public class Item extends Image {
 
     public void setItemAttributes(int itemAttributes) {
         this.itemAttributes = itemAttributes;
+    }
+
+    public int getWeaponAttributes() {
+        return weaponAttributes;
+    }
+
+    public void setWeaponAttributes(int weaponAttributes) {
+        this.weaponAttributes = weaponAttributes;
     }
 
     public int getItemUseType() {
@@ -148,6 +181,35 @@ public class Item extends Image {
 
     public boolean isEquippable() {
         return ((itemAttributes & ItemAttribute.EQUIPPABLE.getValue()) == ItemAttribute.EQUIPPABLE.getValue());
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    @Override
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public boolean isSword() {
+        return ((weaponAttributes & WeaponAttribute.SWORD.getValue()) == WeaponAttribute.SWORD.getValue());
+    }
+
+    public boolean isStaff() {
+        return ((weaponAttributes & WeaponAttribute.STAFF.getValue()) == WeaponAttribute.STAFF.getValue());
+    }
+
+    public boolean isBow() {
+        return ((weaponAttributes & WeaponAttribute.BOW.getValue()) == WeaponAttribute.BOW.getValue());
+    }
+
+    public void setWeaponStats(WeaponStats weaponStats) {
+        this.weaponStats = weaponStats;
+    }
+
+    public WeaponStats getWeaponStats() {
+        return weaponStats;
     }
 
     public void destroyBody() {

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import Utils.ConsoleLog;
 import me.extain.server.Player.Character;
@@ -78,8 +79,19 @@ public class DatabaseUtil {
                 Character character = new Character();
                 character.setAccountID(rs.getInt("accountID"));
                 character.setId(rs.getInt("id"));
-                character.equipItems.addAll(Arrays.asList(rs.getString("equipItems").split(",")));
-                character.inventoryItems.addAll(Arrays.asList(rs.getString("inventoryItems").split(",")));
+                List<String> equipItems = Arrays.asList(rs.getString("equipItems").split(","));
+                List<String> invItems = Arrays.asList(rs.getString("inventoryItems").split(","));
+
+                for (int i = 0; i < equipItems.size(); i++) {
+                    character.addEquipItem(i, equipItems.get(i));
+                }
+
+                for (int i = 0; i < invItems.size(); i++) {
+                    character.addInventoryItem(i + 10, invItems.get(i));
+                    ConsoleLog.logError("SlotID: " + (i + 10) + ", " + invItems.get(i));
+                }
+
+
 
                 characters.add(character);
             }
@@ -95,7 +107,7 @@ public class DatabaseUtil {
 
         int id = MathUtils.random(0, 10000);
         String equipItem = "stick,player-idle";
-        String inventoryItem = "stick,player-idle";
+        String inventoryItem = "stick2,player-idle";
 
         try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
             pst.setInt(1, accountID);
@@ -110,8 +122,16 @@ public class DatabaseUtil {
         Character character = new Character();
         character.setAccountID(accountID);
         character.setId(id);
-        character.equipItems.addAll(Arrays.asList(equipItem.split(",")));
-        character.inventoryItems.addAll(Arrays.asList(inventoryItem.split(",")));
+        List<String> equipItems = Arrays.asList(equipItem.split(","));
+        List<String> invItems = Arrays.asList(inventoryItem.split(","));
+
+        for (int i = 0; i < equipItems.size(); i++) {
+            character.addEquipItem(i, equipItems.get(i));
+        }
+
+        for (int i = 0; i < invItems.size(); i++) {
+            character.addInventoryItem(i + 10, invItems.get(i));
+        }
 
         return character;
     }
@@ -120,8 +140,8 @@ public class DatabaseUtil {
 
         if (character == null) return;
 
-        String equipItems = String.join(",", character.getEquipItems());
-        String inventoryItems = String.join(",", character.getInventoryItems());
+        String equipItems = String.join(",", character.getEquipItems().values());
+        String inventoryItems = String.join(",", character.getInventoryItems().values());
         String query = "UPDATE characters SET equipItems='" + equipItems +"', inventoryItems='" + inventoryItems +"' WHERE id='"+ character.getId() + "'";
 
         try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
