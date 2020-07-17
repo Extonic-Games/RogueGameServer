@@ -1,6 +1,6 @@
 package me.extain.server.packets;
 
-import me.extain.server.Player.Character;
+import me.extain.server.objects.Player.Character;
 
 public class NewCharacterAckPacket {
 

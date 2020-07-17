@@ -13,6 +13,13 @@ OctoShot
   index: -1
 Test
   rotate: false
+  xy: 44, 4
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+arrow
+  rotate: false
   xy: 24, 4
   size: 16, 16
   orig: 16, 16

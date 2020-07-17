@@ -1,20 +1,18 @@
-package me.extain.server;
+package me.extain.server.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.esotericsoftware.kryonet.Server;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import me.extain.server.Physics.Box2DHelper;
-import me.extain.server.Player.Player;
+import me.extain.server.objects.Player.Player;
 
 public class GameObjectManager {
 
-    public CopyOnWriteArrayList<GameObject> objects;
-    public ArrayList<GameObject> removeObjects;
+    private final CopyOnWriteArrayList<GameObject> objects;
+    private ArrayList<GameObject> removeObjects;
     private ObjectComparator comparator = new ObjectComparator();
 
     public GameObjectManager() {
@@ -30,8 +28,7 @@ public class GameObjectManager {
                 Box2DHelper.getWorld().destroyBody(object.getBody());
                 if (object.getEyesBody() != null)
                     Box2DHelper.getWorld().destroyBody(object.getEyesBody());
-
-                System.out.println("Removing object: " + object.getName());
+                object.dispose();
             }
 
         removeObjects.clear();
@@ -70,7 +67,7 @@ public class GameObjectManager {
 
     public void removeObject(String name) {
         for (GameObject object : objects) {
-            if (object.getName() == name) {
+            if (object.getName().equals(name)) {
                 removeObjects.add(object);
             }
         }
@@ -80,7 +77,7 @@ public class GameObjectManager {
         return objects;
     }
 
-    private class ObjectComparator implements Comparator<GameObject> {
+    protected static class ObjectComparator implements Comparator<GameObject> {
 
         @Override
         public int compare(GameObject gameObject, GameObject t1) {

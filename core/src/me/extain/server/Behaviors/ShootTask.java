@@ -5,7 +5,7 @@ import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.badlogic.gdx.math.Vector2;
 
-import me.extain.server.GameObject;
+import me.extain.server.objects.GameObject;
 import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.Projectile.ProjectileFactory;
 

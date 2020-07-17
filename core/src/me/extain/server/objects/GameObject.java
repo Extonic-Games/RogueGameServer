@@ -1,30 +1,24 @@
-package me.extain.server;
+package me.extain.server.objects;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
-import com.badlogic.gdx.ai.steer.behaviors.Pursue;
-import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance;
-import com.badlogic.gdx.ai.steer.behaviors.Seek;
-import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.ai.utils.Location;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-import me.extain.server.Behaviors.Behaviors;
 import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.Projectile.Projectile;
+import me.extain.server.RogueGameServer;
 import me.extain.server.map.tiled.TileMap;
 import me.extain.server.packets.LootDropPacket;
 import me.extain.server.packets.ShootPacket;
@@ -58,16 +52,14 @@ public class GameObject implements Steerable<Vector2> {
     private TextureAtlas atlas;
     private float health, maxHealth;
 
-    public float shootTimer = 40;
+    private float shootTimer = 40;
 
     public boolean isDestroy = false;
 
     private Body eyesBody;
 
-    public ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+    private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
     private ArrayList<Projectile> removeProjectiles = new ArrayList<Projectile>();
-
-    private ArrayList<Behaviors> behaviors = new ArrayList<Behaviors>();
 
     private BehaviorTree<GameObject> behaviorTree;
 
@@ -111,13 +103,13 @@ public class GameObject implements Steerable<Vector2> {
 
         lootTable = new HashMap<>();
         lootTable.put(5, "stick");
+        lootTable.put(1, "bow");
 
 
         //this.objectName = "GameObject";
 
 
-        if (body != null)
-            this.body.setUserData(this);
+        this.body.setUserData(this);
     }
 
     public GameObject(GameObjectWrapper wrapper, Vector2 positon, Body body) {
@@ -141,6 +133,7 @@ public class GameObject implements Steerable<Vector2> {
 
         lootTable = new HashMap<>();
         lootTable.put(5, "stick");
+        lootTable.put(1, "bow");
     }
 
     public void update(float deltaTime) {
@@ -168,7 +161,6 @@ public class GameObject implements Steerable<Vector2> {
             applySteering(steeringOutput, 1f);
         }
 
-        updateBehaviors(deltaTime);
         if (behaviorTree != null)
             behaviorTree.step();
 
@@ -194,12 +186,6 @@ public class GameObject implements Steerable<Vector2> {
     public void render(SpriteBatch batch) {
     }
 
-    public void updateBehaviors(float deltaTime) {
-        for (Behaviors behavior : behaviors) {
-            behavior.update(deltaTime);
-        }
-    }
-
     public void setBehaviorTarget(GameObject object) {
 
         if (object != null) {
@@ -207,11 +193,6 @@ public class GameObject implements Steerable<Vector2> {
             isTarget = true;
         } else {
             isTarget = false;
-        }
-
-
-        for (Behaviors behavior : behaviors) {
-            //behavior.setTarget(object);
         }
     }
 
@@ -226,8 +207,6 @@ public class GameObject implements Steerable<Vector2> {
     public void onHit(GameObject object, float damage, int shooterID) {
         if (!(object instanceof Projectile)) {
             object.takeDamage(damage);
-
-            System.out.println(object.getName() + ": health: " + object.getHealth());
 
             isBlink = true;
 
@@ -251,17 +230,27 @@ public class GameObject implements Steerable<Vector2> {
 
         String lootChance;
 
-        System.out.println(randomValue);
-        lootChance = lootTable.get(MathUtils.random(10));
-        lootChance = lootTable.get(MathUtils.random(10));
-        lootChance = lootTable.get(MathUtils.random(10));
+        ArrayList<String> items = new ArrayList<>();
+
+        int lootRand = MathUtils.random(10);
+        lootChance = lootTable.get(lootRand);
+        if (lootTable.get(lootRand) != null)
+            items.add(lootChance);
+        lootRand = MathUtils.random(10);
+        lootChance = lootTable.get(lootRand);
+        if (lootTable.get(lootRand) != null)
+            items.add(lootChance);
+        lootRand = MathUtils.random(10);
+        lootChance = lootTable.get(lootRand);
+        if (lootTable.get(lootRand) != null)
+            items.add(lootChance);
+
+        for (Map.Entry<Integer, String> entry : lootTable.entrySet())
+            if (entry.getKey().equals(1)) items.add(entry.getValue());
 
             // Drop loot bag
-            ArrayList<String> items = new ArrayList<>();
-            //items.add(lootChance);
-            items.add("stick");
             LootDropPacket lootDropPacket = new LootDropPacket();
-            lootDropPacket.id = (int) MathUtils.random(5000, 6000);
+            lootDropPacket.id = MathUtils.random(5000, 6000);
             lootDropPacket.items = items;
             lootDropPacket.x = this.getPosition().x;
             lootDropPacket.y = this.getPosition().y;
@@ -303,7 +292,7 @@ public class GameObject implements Steerable<Vector2> {
         isMoving = true;
     }
 
-    public void applySteering(SteeringAcceleration<Vector2> steering, float time) {
+    private void applySteering(SteeringAcceleration<Vector2> steering, float time) {
         this.linearVelocity.mulAdd(steering.linear, time).limit(this.getMaxLinearSpeed());
 
        move(linearVelocity);
@@ -320,15 +309,11 @@ public class GameObject implements Steerable<Vector2> {
         }
     }
 
-    public static float calculateOrientationFromLinearVelocity(Steerable<Vector2> object) {
+    private static float calculateOrientationFromLinearVelocity(Steerable<Vector2> object) {
         if (object.getLinearVelocity().isZero(MathUtils.FLOAT_ROUNDING_ERROR))
             return object.getOrientation();
 
         return object.vectorToAngle(object.getLinearVelocity());
-    }
-
-    public void addBehavior(Behaviors behavior) {
-        this.behaviors.add(behavior);
     }
 
     public void setBehaviorTree(BehaviorTree<GameObject> btree) {
@@ -347,12 +332,6 @@ public class GameObject implements Steerable<Vector2> {
         return steeringBehavior;
     }
 
-    public void removeBehavior(Behaviors behavior) { this.behaviors.remove(behavior); }
-
-    public ArrayList<Behaviors> getBehaviors() {
-        return behaviors;
-    }
-
     public boolean isDestroy() {
         return this.isDestroy;
     }
@@ -367,7 +346,7 @@ public class GameObject implements Steerable<Vector2> {
 
     public float getMaxHealth() { return maxHealth; }
 
-    public void takeDamage(float damage) {
+    private void takeDamage(float damage) {
         health -= damage;
     }
 
@@ -558,7 +537,8 @@ public class GameObject implements Steerable<Vector2> {
     }
 
     public void dispose() {
-        atlas.dispose();
+        if (atlas != null)
+            atlas.dispose();
     }
 
     protected boolean isFlip() {

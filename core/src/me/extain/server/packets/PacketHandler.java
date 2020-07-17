@@ -1,26 +1,21 @@
 package me.extain.server.packets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
-import java.util.Queue;
-
-import javax.xml.crypto.Data;
-
 import Utils.ConsoleLog;
-import me.extain.server.GameObject;
+import me.extain.server.objects.GameObject;
 import me.extain.server.Physics.Box2DHelper;
-import me.extain.server.Player.Account;
-import me.extain.server.Player.Player;
+import me.extain.server.objects.Player.Account;
+import me.extain.server.objects.Player.Player;
 import me.extain.server.Projectile.Projectile;
 import me.extain.server.Projectile.ProjectileFactory;
 import me.extain.server.RogueGameServer;
 import me.extain.server.ServerPlayer;
 import me.extain.server.db.DatabaseUtil;
 
-import me.extain.server.Player.Character;
+import me.extain.server.objects.Player.Character;
 import me.extain.server.item.Item;
 import me.extain.server.item.ItemFactory;
 import me.extain.server.network.CommandHandler;
@@ -30,8 +25,6 @@ public class PacketHandler {
     private CommandHandler commandHandler = new CommandHandler();
 
     public void handleHello(Connection connection, HelloPacket packet) {
-        System.out.println(packet.getMessage());
-
         HelloPacketACK helloPacketACK = new HelloPacketACK();
         connection.sendTCP(helloPacketACK);
     }
@@ -54,16 +47,17 @@ public class PacketHandler {
         Account account = RogueGameServer.getInstance().getAccounts().get(connection.getID());
         int weapon = 0;
 
-        if (!account.getSelectedChar().getEquipItems().get(weapon).isEmpty()) {
-            Item item = ItemFactory.instantiate().getItem(account.getSelectedChar().getEquipItems().get(weapon));
+        if (account.getSelectedChar().getEquipItems().get(weapon) != null) {
+            Item item = account.getSelectedChar().getEquipItems().get(weapon);
 
-            if (!item.getWeaponStats().getProjectile().equals("")) {
+            if (!item.getWeaponStats().getProjectile().equals("") && RogueGameServer.getInstance().getPlayers().get(connection.getID()).isCanShoot()) {
                 Projectile projectile = ProjectileFactory.getInstance().getProjectile(item.getWeaponStats().getProjectile(), new Vector2(packet.x, packet.y), new Vector2(packet.velX, packet.velY), packet.mask);
                 projectile.setMinDamage(item.getWeaponStats().getDamage());
                 projectile.setMaxDamage(item.getWeaponStats().getMaxDamage());
                 packet.name = item.getWeaponStats().getProjectile();
                 packet.damage = projectile.getDamageRange();
                 projectile.shooterID = packet.id;
+                RogueGameServer.getInstance().getPlayers().get(connection.getID()).shoot(item);
                 if (!Box2DHelper.getWorld().isLocked())
                     RogueGameServer.getInstance().getServerWorld().getGameObjectManager().getGameObjects().add(projectile);
                 server.sendToAllUDP(packet);
@@ -118,7 +112,6 @@ public class PacketHandler {
                     server.sendToTCP(connection.getID(), successPacket);
                 } else {
                     connection.close();
-                    ConsoleLog.logWarn("Player: " + packet.username + ", is banned!");
                 }
             } else {
                ConsoleLog.logWarn("Account already logged in!");
@@ -189,16 +182,17 @@ public class PacketHandler {
     }
 
     public void handleInventoryUpdatePacket(Connection connection, Server server, InventoryUpdatePacket packet) {
+        Item item = ItemFactory.instantiate().getItem(packet.itemName);
         if (packet.isAdded) {
             if (packet.isEquipSlots)
-                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addEquipItem(packet.slotID, packet.itemName);
+                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addEquipItem(packet.slotID, item);
             else
-                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addInventoryItem(packet.slotID, packet.itemName);
+                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addInventoryItem(packet.slotID, item);
         } else {
             if (packet.isEquipSlots)
-                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().removeEquipItem(packet.slotID, packet.itemName);
+                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().removeEquipItem(packet.slotID);
             else
-                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().removeInventoryItem(packet.slotID, packet.itemName);
+                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().removeInventoryItem(packet.slotID);
         }
     }
 

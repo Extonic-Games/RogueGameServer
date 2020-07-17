@@ -1,25 +1,16 @@
-package me.extain.server;
+package me.extain.server.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
-import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import me.extain.server.Behaviors.ChaseBehavior;
-import me.extain.server.Behaviors.ShootBehavior;
 import me.extain.server.Physics.Box2DHelper;
 
 
@@ -63,26 +54,21 @@ public class GameObjectFactory {
 
         if (gameObjects.get(name) == null)
             gameObjects.put(name, wrapper);
-
-        System.out.println(gameObjects.toString());
     }
 
-    public static GameObject createObject(String name, Vector2 pos) {
+    public GameObject createObject(String name, Vector2 pos) {
         GameObjectWrapper wrapper = gameObjects.get(name);
 
         GameObject object = new GameObject(wrapper, pos, Box2DHelper.createDynamicBodyCircle(pos, wrapper.size / 3, Box2DHelper.BIT_ENEMY));
 
-        if (object != null) {
-            object.setID(MathUtils.random(1000));
+        object.setID(MathUtils.random(1000));
 
-            BehaviorTreeLibraryManager btlm = BehaviorTreeLibraryManager.getInstance();
-            BehaviorTree btree = btlm.createBehaviorTree("entities/btree/test.btree", object);
-            object.setBehaviorTree(btree);
-            object.createEyes();
+        BehaviorTreeLibraryManager btlm = BehaviorTreeLibraryManager.getInstance();
+        BehaviorTree btree = btlm.createBehaviorTree("entities/btree/test.btree", object);
+        object.setBehaviorTree(btree);
+        object.createEyes();
 
-            return object;
-        }
+        return object;
 
-        return null;
     }
 }

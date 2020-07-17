@@ -31,5 +31,20 @@
 		"itemTypeID": "stick2",
 		"itemShortDesc": "Just an ordinary stick 2",
 		"itemValue": 50
+	},
+	{
+		"itemAttributes": 2,
+		"weaponAttributes": 4,
+		"itemUseType": 8,
+		"itemUseTypeValue": 20,
+		"itemTypeID": "bow",
+		"itemShortDesc": "Just an ordinary bow",
+		"itemValue": 50,
+		"weaponStats": {
+			"maxDamage": 30,
+			"damage": 10,
+			"attackSpeed": 1,
+			"projectile": "arrow"
+		}
 	}
 ]

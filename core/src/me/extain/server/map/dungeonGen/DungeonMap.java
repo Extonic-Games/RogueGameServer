@@ -3,11 +3,9 @@ package me.extain.server.map.dungeonGen;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
 
-import me.extain.server.GameObjectManager;
-import me.extain.server.Player.Player;
+import me.extain.server.objects.GameObjectManager;
+import me.extain.server.objects.Player.Player;
 import me.extain.server.map.BSP.Leaf;
 import me.extain.server.map.Tile;
 

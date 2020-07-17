@@ -11,7 +11,7 @@ subtree name: "shootTowardsPlayer"
 
 
 
-subtree name: "amilow?"
+subtree name: "amILow?"
     sequence
         isHealth? health:10
 
@@ -24,7 +24,7 @@ subtree name: "lowOnHP"
 
 root
     dynamicGuardSelector
-        ($amilow?) $lowOnHP
+        ($amILow?) $lowOnHP
         (isTarget?) $shootTowardsPlayer
         () chase
 

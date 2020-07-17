@@ -1,18 +1,12 @@
-package me.extain.server.Player;
+package me.extain.server.objects.Player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
-import Utils.ConsoleLog;
-import me.extain.server.GameObject;
+import me.extain.server.objects.GameObject;
 import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.RogueGameServer;
+import me.extain.server.item.Item;
 import me.extain.server.packets.UpdatePacket;
 
 public class Player extends GameObject {
@@ -21,6 +15,8 @@ public class Player extends GameObject {
     private Vector2 oldPos;
 
     private String username;
+
+    private boolean canShoot = false;
 
     public Player(Vector2 position) {
         super(position, Box2DHelper.createDynamicBodyCircle(position, 4f, Box2DHelper.BIT_PLAYER));
@@ -40,7 +36,12 @@ public class Player extends GameObject {
 
         this.getBody().setLinearDamping(5);
 
-        if (shootTimer != 0) shootTimer--;
+        if (shootTimer != 0) {
+            shootTimer--;
+        }
+        else {
+            canShoot = true;
+        }
 
         this.getPosition().set(this.getBody().getPosition());
 
@@ -51,6 +52,11 @@ public class Player extends GameObject {
         packet.y = getPosition().y;
         packet.health = this.getHealth();
         RogueGameServer.getInstance().getServer().sendToAllUDP(packet);
+    }
+
+    public void shoot(Item item) {
+        canShoot = false;
+        shootTimer = 20 * item.getWeaponStats().getAttackSpeed();
     }
 
 
@@ -70,5 +76,9 @@ public class Player extends GameObject {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isCanShoot() {
+        return canShoot;
     }
 }

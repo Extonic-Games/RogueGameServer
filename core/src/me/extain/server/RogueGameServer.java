@@ -8,15 +8,14 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import Utils.ConsoleLog;
-import me.extain.server.Player.Account;
-import me.extain.server.Player.Player;
+import me.extain.server.objects.Player.Account;
+import me.extain.server.objects.Player.Player;
 import me.extain.server.network.NetworkHandler;
+import me.extain.server.objects.GameObjectManager;
 
 public class RogueGameServer extends ApplicationAdapter {
 
 	private Server server;
-
-	private boolean isRunning = false;
 
 	private ServerNetworkListener serverNetworkListener;
 
@@ -30,12 +29,10 @@ public class RogueGameServer extends ApplicationAdapter {
 	private HashMap<Integer, Player> players;
 
 	public static RogueGameServer getInstance() {
-		if (instance == null) return instance = new RogueGameServer();
-		else return instance;
+		return instance;
 	}
 
 	public void create() {
-		isRunning = true;
 		instance = this;
 		gameObjectManager = new GameObjectManager();
 		server = new Server();
@@ -99,4 +96,5 @@ public class RogueGameServer extends ApplicationAdapter {
 	public void removePlayer(int id) {
 		this.players.remove(id);
 	}
+
 }

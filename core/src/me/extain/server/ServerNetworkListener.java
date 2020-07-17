@@ -7,7 +7,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
-import me.extain.server.Player.Player;
+import me.extain.server.objects.Player.Player;
 import me.extain.server.db.DatabaseUtil;
 import me.extain.server.packets.HelloPacket;
 import me.extain.server.packets.InventoryUpdatePacket;
@@ -16,7 +16,6 @@ import me.extain.server.packets.LoginUserPacket;
 import me.extain.server.packets.MessagePacket;
 import me.extain.server.packets.MovePacket;
 import me.extain.server.packets.NewCharacterPacket;
-import me.extain.server.packets.NewPlayerPacket;
 import me.extain.server.packets.PacketHandler;
 import me.extain.server.packets.PlayerDisconnected;
 import me.extain.server.packets.RequestObjects;
@@ -39,11 +38,15 @@ public class ServerNetworkListener extends Listener {
 
     }
 
-    public void simulatePlayers(int amt) {
+    protected void simulatePlayers(int amt) {
         for (int i = 0; i < amt; i++) {
             ServerPlayer player = new ServerPlayer();
 
-            player.setPosition((MathUtils.random(RogueGameServer.getInstance().getServerWorld().tileMap.getPlayerSpawn().x, RogueGameServer.getInstance().getServerWorld().tileMap.getPlayerSpawn().x + i)), RogueGameServer.getInstance().getServerWorld().tileMap.getPlayerSpawn().y);
+            player.setPosition((MathUtils.random(
+                    RogueGameServer.getInstance().getServerWorld().getTileMap().getPlayerSpawn().x,
+                    RogueGameServer.getInstance().getServerWorld().getTileMap().getPlayerSpawn().x + i)),
+                    RogueGameServer.getInstance().getServerWorld().getTileMap().getPlayerSpawn().y);
+
             Player player2 = new Player(new Vector2(player.getX(), player.getY()));
             RogueGameServer.getInstance().addPlayer(i + 5, player2);
         }
@@ -58,7 +61,6 @@ public class ServerNetworkListener extends Listener {
             RogueGameServer.getInstance().removeAccount(c.getID());
         }
         server.sendToAllExceptTCP(c.getID(), playerDisconnected);
-        System.out.println("Player: " + c.getID() + " has disconnected!");
     }
 
     @Override

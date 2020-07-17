@@ -4,7 +4,7 @@ import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 
-import me.extain.server.GameObject;
+import me.extain.server.objects.GameObject;
 
 public class IsMyHealthCondition extends LeafTask<GameObject> {
 

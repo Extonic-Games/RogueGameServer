@@ -1,8 +1,12 @@
 package me.extain.server.network;
 
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -11,6 +15,7 @@ import java.util.HashMap;
 
 import me.extain.server.ServerPlayer;
 import me.extain.server.item.Item;
+import me.extain.server.item.WeaponStats;
 import me.extain.server.packets.HelloPacket;
 import me.extain.server.packets.HelloPacketACK;
 import me.extain.server.packets.InventoryUpdatePacket;
@@ -30,7 +35,7 @@ import me.extain.server.packets.RequestObjects;
 import me.extain.server.packets.SendObjectsPacket;
 import me.extain.server.packets.ShootPacket;
 import me.extain.server.packets.UpdatePacket;
-import me.extain.server.Player.Character;
+import me.extain.server.objects.Player.Character;
 
 public class NetworkHandler {
 
@@ -65,6 +70,13 @@ public class NetworkHandler {
         kryo.register(Object[].class);
         kryo.register(InventoryUpdatePacket.class);
         kryo.register(HashMap.class);
+        kryo.register(DelayedRemovalArray.class);
+        kryo.register(IntArray.class);
+        kryo.register(int[].class);
+        kryo.register(Color.class);
+        kryo.register(Scaling.class);
+        kryo.register(Touchable.class);
+        kryo.register(WeaponStats.class);
     }
 
 }

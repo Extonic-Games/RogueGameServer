@@ -1,12 +1,11 @@
 package me.extain.server;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 
 import java.util.ArrayList;
 
 import me.extain.server.Physics.Box2DHelper;
-import me.extain.server.item.Item;
+import me.extain.server.objects.GameObject;
 
 public class LootBagObject extends GameObject {
 

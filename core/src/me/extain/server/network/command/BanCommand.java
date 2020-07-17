@@ -2,7 +2,7 @@ package me.extain.server.network.command;
 
 import java.util.Map;
 
-import me.extain.server.Player.Account;
+import me.extain.server.objects.Player.Account;
 import me.extain.server.RogueGameServer;
 import me.extain.server.db.DatabaseUtil;
 import me.extain.server.packets.MessagePacket;

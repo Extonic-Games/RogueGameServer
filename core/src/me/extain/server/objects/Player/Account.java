@@ -1,4 +1,4 @@
-package me.extain.server.Player;
+package me.extain.server.objects.Player;
 
 import java.util.ArrayList;
 
@@ -7,11 +7,11 @@ import me.extain.server.db.DatabaseUtil;
 public class Account {
 
     public int id;
-    public int connectionID;
+    private int connectionID;
     public String username;
-    public String email;
-    public String password;
-    public int rank = 0;
+    private String email;
+    private String password;
+    private int rank = 0;
     public boolean isBanned = false;
     public boolean isMuted = false;
 

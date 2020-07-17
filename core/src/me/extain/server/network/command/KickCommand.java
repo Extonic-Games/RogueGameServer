@@ -4,7 +4,7 @@ import com.esotericsoftware.kryonet.Connection;
 
 import java.util.Map;
 
-import me.extain.server.Player.Account;
+import me.extain.server.objects.Player.Account;
 import me.extain.server.RogueGameServer;
 import me.extain.server.packets.MessagePacket;
 

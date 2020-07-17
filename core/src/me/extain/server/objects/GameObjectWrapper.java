@@ -1,4 +1,4 @@
-package me.extain.server;
+package me.extain.server.objects;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 

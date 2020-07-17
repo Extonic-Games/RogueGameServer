@@ -1,7 +1,7 @@
 package me.extain.server.packets;
 
 import java.util.ArrayList;
-import me.extain.server.Player.Character;
+import me.extain.server.objects.Player.Character;
 
 public class LoginSuccessPacket {
 

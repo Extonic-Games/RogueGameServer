@@ -2,11 +2,10 @@ package me.extain.server.network.command;
 
 import java.util.Map;
 
-import me.extain.server.Player.Account;
-import me.extain.server.Player.Player;
+import me.extain.server.objects.Player.Account;
+import me.extain.server.objects.Player.Player;
 import me.extain.server.RogueGameServer;
 import me.extain.server.packets.MessagePacket;
-import me.extain.server.packets.UpdatePacket;
 
 public class TeleportCommand implements Command {
     @Override

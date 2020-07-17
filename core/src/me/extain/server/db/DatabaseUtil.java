@@ -1,6 +1,5 @@
 package me.extain.server.db;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.sql.Connection;
@@ -11,9 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import Utils.ConsoleLog;
-import me.extain.server.Player.Character;
+import me.extain.server.objects.Player.Character;
+import me.extain.server.item.Item;
 import me.extain.server.item.ItemFactory;
 
 public class DatabaseUtil {
@@ -41,11 +42,7 @@ public class DatabaseUtil {
         String query = "Select * from users Where username='" + accName + "' and password='" + accPass + "'";
 
         try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query); ResultSet rs = pst.executeQuery()) {
-            if (rs.next()) {
-                return true;
-            } else {
-                return false;
-            }
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -83,12 +80,11 @@ public class DatabaseUtil {
                 List<String> invItems = Arrays.asList(rs.getString("inventoryItems").split(","));
 
                 for (int i = 0; i < equipItems.size(); i++) {
-                    character.addEquipItem(i, equipItems.get(i));
+                    character.addEquipItem(i, ItemFactory.instantiate().getItem(equipItems.get(i)));
                 }
 
                 for (int i = 0; i < invItems.size(); i++) {
-                    character.addInventoryItem(i + 10, invItems.get(i));
-                    ConsoleLog.logError("SlotID: " + (i + 10) + ", " + invItems.get(i));
+                    character.addInventoryItem(i + 10, ItemFactory.instantiate().getItem(invItems.get(i)));
                 }
 
 
@@ -106,8 +102,8 @@ public class DatabaseUtil {
         String query = "INSERT INTO characters(accountID, id, equipItems, inventoryItems) VALUES(?, ?, ?, ?)";
 
         int id = MathUtils.random(0, 10000);
-        String equipItem = "stick,player-idle";
-        String inventoryItem = "stick2,player-idle";
+        String equipItem = "bow,player-idle";
+        String inventoryItem = "stick";
 
         try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
             pst.setInt(1, accountID);
@@ -126,11 +122,11 @@ public class DatabaseUtil {
         List<String> invItems = Arrays.asList(inventoryItem.split(","));
 
         for (int i = 0; i < equipItems.size(); i++) {
-            character.addEquipItem(i, equipItems.get(i));
+            character.addEquipItem(i, ItemFactory.instantiate().getItem(equipItems.get(i)));
         }
 
         for (int i = 0; i < invItems.size(); i++) {
-            character.addInventoryItem(i + 10, invItems.get(i));
+            character.addInventoryItem(i + 10, ItemFactory.instantiate().getItem(invItems.get(i)));
         }
 
         return character;
@@ -140,13 +136,24 @@ public class DatabaseUtil {
 
         if (character == null) return;
 
-        String equipItems = String.join(",", character.getEquipItems().values());
-        String inventoryItems = String.join(",", character.getInventoryItems().values());
+        ArrayList<String> equipItemList = new ArrayList<>();
+        ArrayList<String> invItemList = new ArrayList<>();
+
+        for (Map.Entry<Integer, Item> entry : character.getEquipItems().entrySet())
+            equipItemList.add(entry.getValue().getItemTypeID());
+
+        for (Map.Entry<Integer, Item> entry : character.getInventoryItems().entrySet())
+            invItemList.add(entry.getValue().getItemTypeID());
+
+        String equipItems = String.join(",", equipItemList);
+        String inventoryItems = String.join(",", invItemList);
         String query = "UPDATE characters SET equipItems='" + equipItems +"', inventoryItems='" + inventoryItems +"' WHERE id='"+ character.getId() + "'";
 
         try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
             pst.executeUpdate();
             System.out.println("Saved character: " + character.getId());
+            equipItemList.clear();
+            invItemList.clear();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,8 +1,6 @@
 package me.extain.server.map.tiled;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
-import com.badlogic.gdx.files.FileHandle;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
@@ -10,17 +8,15 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.kryonet.Server;
 
-import me.extain.server.GameObjectFactory;
-import me.extain.server.GameObjectManager;
+import me.extain.server.objects.GameObjectFactory;
+import me.extain.server.objects.GameObjectManager;
 import me.extain.server.Physics.Box2DHelper;
-import me.extain.server.Player.Player;
+import me.extain.server.objects.Player.Player;
 
 public class TileMap {
 
@@ -64,16 +60,16 @@ public class TileMap {
 
                 if (object.getName().equalsIgnoreCase("slime_spawn")) {
                     slimeSpawn = new Vector2(rectangle.x, rectangle.y);
-                    gameObjectManager.addGameObject(factory.createObject("slime", slimeSpawn));
+                    gameObjectManager.addGameObject(GameObjectFactory.instantiate().createObject("slime", slimeSpawn));
                 } else if (object.getName().equalsIgnoreCase("octo_spawn")) {
                     slimeSpawn = new Vector2(rectangle.x, rectangle.y);
-                    gameObjectManager.addGameObject(factory.createObject("octo", slimeSpawn));
+                    gameObjectManager.addGameObject(GameObjectFactory.instantiate().createObject("octo", slimeSpawn));
                 }else if (object.getName().equalsIgnoreCase("night-crawler_spawn")) {
                     slimeSpawn = new Vector2(rectangle.x, rectangle.y);
-                    gameObjectManager.addGameObject(factory.createObject("nightcrawler", slimeSpawn));
+                    gameObjectManager.addGameObject(GameObjectFactory.instantiate().createObject("nightcrawler", slimeSpawn));
                 }else if (object.getName().equalsIgnoreCase("angry-blob_spawn")) {
                     slimeSpawn = new Vector2(rectangle.x, rectangle.y);
-                    gameObjectManager.addGameObject(factory.createObject("angryblob", slimeSpawn));
+                    gameObjectManager.addGameObject(GameObjectFactory.instantiate().createObject("angryblob", slimeSpawn));
                 }
             }
         }

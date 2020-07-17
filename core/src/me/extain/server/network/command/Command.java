@@ -1,8 +1,6 @@
 package me.extain.server.network.command;
 
-import com.esotericsoftware.kryonet.Connection;
-
-import me.extain.server.Player.Account;
+import me.extain.server.objects.Player.Account;
 
 public interface Command {
 

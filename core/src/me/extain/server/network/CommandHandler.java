@@ -2,12 +2,11 @@ package me.extain.server.network;
 
 import com.esotericsoftware.kryonet.Connection;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.extain.server.Player.Account;
+import me.extain.server.objects.Player.Account;
 import me.extain.server.RogueGameServer;
 import me.extain.server.network.command.BanCommand;
 import me.extain.server.network.command.Command;
@@ -15,6 +14,7 @@ import me.extain.server.network.command.GodCommand;
 import me.extain.server.network.command.KickCommand;
 import me.extain.server.network.command.MuteCommand;
 import me.extain.server.network.command.RankCommand;
+import me.extain.server.network.command.ReloadCommand;
 import me.extain.server.network.command.TeleportCommand;
 import me.extain.server.network.command.TestCommand;
 import me.extain.server.packets.MessagePacket;
@@ -34,6 +34,7 @@ public class CommandHandler {
         addCommand(new BanCommand());
         addCommand(new TeleportCommand());
         addCommand(new RankCommand());
+        addCommand(new ReloadCommand());
     }
 
     public void addCommand(Command command) {

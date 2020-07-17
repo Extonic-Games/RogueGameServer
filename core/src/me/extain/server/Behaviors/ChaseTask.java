@@ -2,13 +2,9 @@ package me.extain.server.Behaviors;
 
 import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
-import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
-import com.badlogic.gdx.ai.utils.random.ConstantIntegerDistribution;
-import com.badlogic.gdx.ai.utils.random.IntegerDistribution;
-import com.badlogic.gdx.math.Vector2;
 
-import me.extain.server.GameObject;
+import me.extain.server.objects.GameObject;
 
 public class ChaseTask extends LeafTask<GameObject> {
 

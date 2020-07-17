@@ -1,22 +1,19 @@
-package me.extain.server.Player;
+package me.extain.server.objects.Player;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import Utils.ConsoleLog;
 import me.extain.server.item.Item;
 
 public class Character {
 
-    public int accountID;
+    private int accountID;
     public int id;
 
-    public int charLevel;
-    public float charExp;
+    private int charLevel;
+    private float charExp;
 
-    public HashMap<Integer, String> equipItems;
-    public HashMap<Integer, String> inventoryItems;
+    private HashMap<Integer, Item> equipItems;
+    private HashMap<Integer, Item> inventoryItems;
 
     public Character() {
         equipItems = new HashMap<>();
@@ -36,11 +33,11 @@ public class Character {
         this.accountID = accountID;
     }
 
-    public void setEquipItems(HashMap<Integer, String> equipItems) {
+    public void setEquipItems(HashMap<Integer, Item> equipItems) {
         this.equipItems = equipItems;
     }
 
-    public void setInventoryItems(HashMap<Integer, String> inventoryItems) {
+    public void setInventoryItems(HashMap<Integer, Item> inventoryItems) {
         this.inventoryItems = inventoryItems;
     }
 
@@ -60,28 +57,28 @@ public class Character {
         return charLevel;
     }
 
-    public HashMap<Integer, String> getEquipItems() {
+    public HashMap<Integer, Item> getEquipItems() {
         return equipItems;
     }
 
-    public HashMap<Integer, String> getInventoryItems() {
+    public HashMap<Integer, Item> getInventoryItems() {
         return inventoryItems;
     }
 
-    public void addEquipItem(int slot, String itemName) {
+    public void addEquipItem(int slot, Item itemName) {
         equipItems.put(slot, itemName);
     }
 
-    public void addInventoryItem(int slot, String itemName) {
+    public void addInventoryItem(int slot, Item itemName) {
         inventoryItems.put(slot, itemName);
     }
 
-    public void removeEquipItem(int slot, String itemName) {
-        equipItems.remove(slot, itemName);
+    public void removeEquipItem(int slot) {
+        equipItems.remove(slot);
     }
 
-    public void removeInventoryItem(int slot, String itemName) {
-        inventoryItems.remove(slot, itemName);
+    public void removeInventoryItem(int slot) {
+        inventoryItems.remove(slot);
     }
 
     public int getId() {
@@ -92,3 +89,4 @@ public class Character {
         return accountID;
     }
 }
+

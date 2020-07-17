@@ -3,13 +3,13 @@ package me.extain.server;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Server;
 
-import me.extain.server.GameObjectManager;
+import me.extain.server.objects.GameObjectManager;
 import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.map.tiled.TileMap;
 
 public class ServerWorld {
 
-    public TileMap tileMap;
+    private TileMap tileMap;
     private Server server;
     private GameObjectManager gameObjectManager;
     private Box2DHelper box2DHelper;
@@ -43,4 +43,7 @@ public class ServerWorld {
         return gameObjectManager;
     }
 
+    public TileMap getTileMap() {
+        return tileMap;
+    }
 }

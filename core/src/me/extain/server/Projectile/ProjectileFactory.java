@@ -33,7 +33,6 @@ public class ProjectileFactory {
         for (JsonValue jsonValue : list) {
             ProjectileWrapper wrapper = json.readValue(ProjectileWrapper.class, jsonValue);
 
-            System.out.println(wrapper.name);
             projectiles.put(wrapper.name, wrapper);
         }
     }

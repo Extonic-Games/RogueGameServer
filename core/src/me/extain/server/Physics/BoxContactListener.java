@@ -7,8 +7,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-import me.extain.server.GameObject;
-import me.extain.server.Player.Player;
+import me.extain.server.objects.GameObject;
+import me.extain.server.objects.Player.Player;
 import me.extain.server.Projectile.Projectile;
 import me.extain.server.item.Item;
 import me.extain.server.map.tiled.TileMapHelper;
@@ -60,13 +60,11 @@ public class BoxContactListener implements ContactListener {
             GameObject object = (GameObject) bodyB.getUserData();
 
             object.setBehaviorTarget(player);
-            System.out.println(object.getID() + " has found " + player.getID());
         } else if (bodyB.getUserData() instanceof Player && fixtureA.getFilterData().categoryBits == Box2DHelper.BIT_ENEMY_SENSOR) {
             Player player = (Player) bodyB.getUserData();
             GameObject object = (GameObject) bodyA.getUserData();
 
             object.setBehaviorTarget(player);
-            System.out.println(object.getID() + " has found " + player.getID());
         }
 
         if (bodyA.getUserData() instanceof Player && fixtureB.getFilterData().categoryBits == Box2DHelper.BIT_ITEM) {
