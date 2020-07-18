@@ -30,6 +30,7 @@ public class PacketHandler {
     }
 
     public void handleRequestObj(Connection connection, Server server, RequestObjects packet) {
+        // Get the current enemies in the world, and send it to the players.
         for (GameObject gameObject : RogueGameServer.getInstance().getServerWorld().getGameObjectManager().getGameObjects()) {
             if (!(gameObject instanceof Projectile)) {
                 SendObjectsPacket sendObjectsPacket = new SendObjectsPacket();
@@ -44,19 +45,27 @@ public class PacketHandler {
     }
 
     public void handleShootPacket(Connection connection, Server server, ShootPacket packet) {
+
+        // Get the account the player is associated to.
         Account account = RogueGameServer.getInstance().getAccounts().get(connection.getID());
         int weapon = 0;
 
+        // Check to see if they have a weapon equipped.
         if (account.getSelectedChar().getEquipItems().get(weapon) != null) {
             Item item = account.getSelectedChar().getEquipItems().get(weapon);
 
+            // Check to see if the player can shoot.
             if (!item.getWeaponStats().getProjectile().equals("") && RogueGameServer.getInstance().getPlayers().get(connection.getID()).isCanShoot()) {
+
+                // Create the projectile, and send it to the clients.
                 Projectile projectile = ProjectileFactory.getInstance().getProjectile(item.getWeaponStats().getProjectile(), new Vector2(packet.x, packet.y), new Vector2(packet.velX, packet.velY), packet.mask);
                 projectile.setMinDamage(item.getWeaponStats().getDamage());
                 projectile.setMaxDamage(item.getWeaponStats().getMaxDamage());
                 packet.name = item.getWeaponStats().getProjectile();
                 packet.damage = projectile.getDamageRange();
                 projectile.shooterID = packet.id;
+
+                // Update the player and let them know they just shot.
                 RogueGameServer.getInstance().getPlayers().get(connection.getID()).shoot(item);
                 if (!Box2DHelper.getWorld().isLocked())
                     RogueGameServer.getInstance().getServerWorld().getGameObjectManager().getGameObjects().add(projectile);
@@ -67,10 +76,13 @@ public class PacketHandler {
 
     public void handleMessage(Connection connection, Server server, MessagePacket packet) {
 
+        // Check to see if the message is a command.
         if (packet.message.startsWith("/")) {
             commandHandler.processCommand(connection, packet.message);
         } else {
+            // Check to see if player isn't muted.
             if (!RogueGameServer.getInstance().getAccounts().get(connection.getID()).isMuted) {
+                // Create the message packet, and check which rank they are.
                 MessagePacket message = new MessagePacket();
                 if (RogueGameServer.getInstance().getAccounts().get(connection.getID()).getRank() == 6) {
                     message.username = "[CYAN]" + packet.username;
@@ -83,8 +95,10 @@ public class PacketHandler {
                     message.message = packet.message;
                 }
 
+                // Send the message packet.
                 server.sendToAllUDP(message);
             } else {
+                // Let them know they are muted.
                 MessagePacket message = new MessagePacket();
                 message.username = "[ORANGE]Server";
                 message.message = "[]You are muted!";
@@ -95,15 +109,22 @@ public class PacketHandler {
     }
 
     public void handleLogin(Connection connection, Server server, LoginUserPacket packet) {
+
+        // Check to see if the user has an account.
         if (DatabaseUtil.checkUser(packet.username, packet.password)) {
+            // Check to see if the account isn't logged in currently.
             if (RogueGameServer.getInstance().getAccounts().get(packet.id) == null) {
+
+                // Load the account from the database.
                 Account account = new Account(DatabaseUtil.getUserID(packet.username, packet.password), packet.username, packet.email, packet.password);
                 account.setConnectionID(connection.getID());
                 account.setRank(DatabaseUtil.getRank(packet.username, packet.password));
                 account.setMuted(DatabaseUtil.isMuted(packet.username));
                 account.setBanned(DatabaseUtil.isBanned(packet.username));
 
+                // Check to see if the user isn't banned.
                 if (!account.isBanned) {
+                    // Add the account into the list, and send the account to the user.
                     RogueGameServer.getInstance().addAcount(account.getConnectionID(), account);
                     LoginSuccessPacket successPacket = new LoginSuccessPacket();
                     successPacket.id = account.getId();
@@ -111,6 +132,7 @@ public class PacketHandler {
                     successPacket.characters = account.getCharacters();
                     server.sendToTCP(connection.getID(), successPacket);
                 } else {
+                    // If the account is banned close the connection.
                     connection.close();
                 }
             } else {
@@ -122,11 +144,15 @@ public class PacketHandler {
     }
 
     public void handleMove(Connection connection, Server server, MovePacket packet) {
+
+        // Check to see if the current player isn't dead.
         if (!RogueGameServer.getInstance().getPlayers().get(connection.getID()).isDestroy) {
+            // Update player position on the server.
             if (!Box2DHelper.getWorld().isLocked())
                 RogueGameServer.getInstance().getPlayers().get(connection.getID()).getBody().setLinearVelocity(packet.x, packet.y);
             //Gdx.app.log("Server", "Player has moved: " + movePacket.x + " , " + movePacket.y);
 
+            // Send the updated server position to the client.
             packet.id = connection.getID();
             packet.x = RogueGameServer.getInstance().getPlayers().get(connection.getID()).getPosition().x;
             packet.y = RogueGameServer.getInstance().getPlayers().get(connection.getID()).getPosition().y;
@@ -135,13 +161,19 @@ public class PacketHandler {
     }
 
     public void handleJoin(Connection connection, Server server, JoinPacket packet) {
+        // Create a new player packet
         NewPlayerPacket newPlayerPacket = new NewPlayerPacket();
         newPlayerPacket.serverPlayer = packet.player;
+
+        // Create the player with the location sent from the client.
         Player player2 = new Player(new Vector2(packet.player.x, packet.player.y));
         player2.setID(packet.player.id);
         player2.setUsername(packet.player.username);
+
+        // Send the new player to all other connections.
         server.sendToAllExceptTCP(connection.getID(), newPlayerPacket);
 
+        // Send the other players to the one who just connected.
         for (Player player : RogueGameServer.getInstance().getPlayers().values()) {
             NewPlayerPacket packet2 = new NewPlayerPacket();
             ServerPlayer serverPlayer = new ServerPlayer();
@@ -152,10 +184,12 @@ public class PacketHandler {
             connection.sendTCP(packet2);
         }
 
+        // Add the player into the list of players and the world.
         RogueGameServer.getInstance().getAccounts().get(connection.getID()).setSelectedChar(packet.selectedChar);
         RogueGameServer.getInstance().addPlayer(connection.getID(), player2);
         RogueGameServer.getInstance().getServerWorld().gameObjectManager2().addGameObject(player2);
 
+        // Send the current enemies to the player.
         for (GameObject gameObject : RogueGameServer.getInstance().getServerWorld().getGameObjectManager().getGameObjects()) {
             if (!(gameObject instanceof Projectile)) {
                 SendObjectsPacket sendObjectsPacket = new SendObjectsPacket();
@@ -184,8 +218,31 @@ public class PacketHandler {
     public void handleInventoryUpdatePacket(Connection connection, Server server, InventoryUpdatePacket packet) {
         Item item = ItemFactory.instantiate().getItem(packet.itemName);
         if (packet.isAdded) {
-            if (packet.isEquipSlots)
-                RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addEquipItem(packet.slotID, item);
+            if (packet.isEquipSlots) {
+
+                /* Simple Check to see if the equip slot accepts that item. */
+                if (packet.slotID == 0 && item.getItemUseType() == Item.ItemUseType.WEAPON.getValue()) {
+
+                    RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addEquipItem(packet.slotID, item);
+
+                } else if (packet.slotID == 1 && item.getItemUseType() == Item.ItemUseType.ABILITY.getValue()) {
+
+                    RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addEquipItem(packet.slotID, item);
+
+                } else if (packet.slotID == 2 && item.getItemUseType() == Item.ItemUseType.ARMOR_CHEST.getValue()) {
+
+                    RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addEquipItem(packet.slotID, item);
+
+                } else if (packet.slotID == 3 && item.getItemUseType() == Item.ItemUseType.ARMOR_FEET.getValue()) {
+
+                    RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addEquipItem(packet.slotID, item);
+
+                } else {
+                    ConsoleLog.logError("Slot ID: " + packet.slotID + ", does not accept that item!");
+                }
+
+
+            }
             else
                 RogueGameServer.getInstance().getAccounts().get(connection.getID()).getSelectedChar().addInventoryItem(packet.slotID, item);
         } else {

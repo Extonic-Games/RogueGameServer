@@ -2,6 +2,7 @@ package me.extain.server.objects.Player;
 
 import java.util.HashMap;
 
+import Utils.ConsoleLog;
 import me.extain.server.item.Item;
 
 public class Character {
@@ -74,11 +75,11 @@ public class Character {
     }
 
     public void removeEquipItem(int slot) {
-        equipItems.remove(slot);
+        equipItems.put(slot, null);
     }
 
     public void removeInventoryItem(int slot) {
-        inventoryItems.remove(slot);
+        inventoryItems.put(slot, null);
     }
 
     public int getId() {

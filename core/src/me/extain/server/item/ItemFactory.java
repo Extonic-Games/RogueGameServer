@@ -40,7 +40,6 @@ public class ItemFactory {
     }
 
     public Item getItem(String name) {
-        if (name == "") return getItem("stick");
         return new Item(items.get(name));
     }
 

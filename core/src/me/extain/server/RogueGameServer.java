@@ -35,7 +35,7 @@ public class RogueGameServer extends ApplicationAdapter {
 	public void create() {
 		instance = this;
 		gameObjectManager = new GameObjectManager();
-		server = new Server();
+		server = new Server(1000000, 1000000);
 		this.serverWorld = new ServerWorld(server);
 
 		accounts = new HashMap<>();

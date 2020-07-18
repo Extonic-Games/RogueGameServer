@@ -27,11 +27,15 @@ public class DatabaseUtil {
     public static void createUser(String username, String email, String accPassword, int rank) {
         String query = "INSERT INTO users(username, email, password, Rank) VALUES(?, ?, ?, ?)";
 
+        processInsertUser(query, username, email, AES.encrypt(accPassword, sercretKey), rank);
+    }
+
+    private static void processInsertUser(String query, Object... params) {
         try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
-            pst.setString(1, username);
-            pst.setString(2, email);
-            pst.setString(3, AES.encrypt(accPassword, sercretKey));
-            pst.setInt(4, rank);
+            pst.setString(1, (String) params[0]);
+            pst.setString(2, (String) params[1]);
+            pst.setString(3, AES.encrypt((String) params[2], sercretKey));
+            pst.setInt(4, (Integer) params[3]);
             pst.execute();
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,10 +84,12 @@ public class DatabaseUtil {
                 List<String> invItems = Arrays.asList(rs.getString("inventoryItems").split(","));
 
                 for (int i = 0; i < equipItems.size(); i++) {
+                    if (equipItems.get(i).equals(""))  i++;
                     character.addEquipItem(i, ItemFactory.instantiate().getItem(equipItems.get(i)));
                 }
 
                 for (int i = 0; i < invItems.size(); i++) {
+                    if (invItems.get(i).equals("")) i++;
                     character.addInventoryItem(i + 10, ItemFactory.instantiate().getItem(invItems.get(i)));
                 }
 
@@ -105,15 +111,7 @@ public class DatabaseUtil {
         String equipItem = "bow,player-idle";
         String inventoryItem = "stick";
 
-        try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
-            pst.setInt(1, accountID);
-            pst.setInt(2, id);
-            pst.setString(3, equipItem);
-            pst.setString(4, inventoryItem);
-            pst.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        processCharacterInsert(query, accountID, id, equipItem, inventoryItem);
 
         Character character = new Character();
         character.setAccountID(accountID);
@@ -136,27 +134,38 @@ public class DatabaseUtil {
 
         if (character == null) return;
 
+        // Create a list of strings for the items.
         ArrayList<String> equipItemList = new ArrayList<>();
         ArrayList<String> invItemList = new ArrayList<>();
 
-        for (Map.Entry<Integer, Item> entry : character.getEquipItems().entrySet())
-            equipItemList.add(entry.getValue().getItemTypeID());
+        // Loop through the current items the player has and get the name of it. Add it to the list of strings.
+        for (Map.Entry<Integer, Item> entry : character.getEquipItems().entrySet()) {
+            if (entry.getValue() == null)
+                equipItemList.add("");
+            else
+                equipItemList.add(entry.getValue().getItemTypeID());
+        }
 
-        for (Map.Entry<Integer, Item> entry : character.getInventoryItems().entrySet())
-            invItemList.add(entry.getValue().getItemTypeID());
+        for (Map.Entry<Integer, Item> entry : character.getInventoryItems().entrySet()) {
+            if (entry.getValue() == null)
+                equipItemList.add("");
+            else
+                invItemList.add(entry.getValue().getItemTypeID());
+        }
 
+        // Place it into a string. Ex: "stick,stick,stick"
         String equipItems = String.join(",", equipItemList);
         String inventoryItems = String.join(",", invItemList);
+
+        // Create a sql query with the strings.
         String query = "UPDATE characters SET equipItems='" + equipItems +"', inventoryItems='" + inventoryItems +"' WHERE id='"+ character.getId() + "'";
 
-        try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
-            pst.executeUpdate();
-            System.out.println("Saved character: " + character.getId());
-            equipItemList.clear();
-            invItemList.clear();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Process the query
+        processQueryUpdate(query);
+
+        // Clear out the string lists.
+        equipItemList.clear();
+        invItemList.clear();
     }
 
     public static int getRank(String accName, String accPass) {
@@ -178,31 +187,20 @@ public class DatabaseUtil {
     public static void rankPlayer(String accName, int rank) {
         String query = "UPDATE users SET Rank='" + rank + "' Where username='" + accName + "'";
 
-        try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
-            pst.executeUpdate();
-        } catch (Exception e) {
-            ConsoleLog.logError(e.toString());
-        }
+
+        processQueryUpdate(query);
     }
 
     public static void mutePlayer(String accName) {
         String query = "UPDATE users SET Muted=true Where username='" + accName + "'";
 
-        try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
-            pst.executeUpdate();
-        } catch (Exception e) {
-            ConsoleLog.logError(e.toString());
-        }
+        processQueryUpdate(query);
     }
 
     public static void banPlayer(String accName) {
         String query = "UPDATE users SET Banned=true Where username='" + accName + "'";
 
-        try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
-            pst.executeUpdate();
-        } catch (Exception e) {
-            ConsoleLog.logError(e.toString());
-        }
+        processQueryUpdate(query);
     }
 
     public static boolean isMuted(String accName) {
@@ -235,6 +233,38 @@ public class DatabaseUtil {
         }
 
         return false;
+    }
+
+    private static void processQueryUpdate(String query) {
+        try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
+            int log = pst.executeUpdate();
+
+            if (log > 0) {
+                ConsoleLog.logSuccess("Query Update was successful for: " + query);
+            } else {
+                ConsoleLog.logError("Query Update failed for: " + query);
+            }
+        } catch (Exception e) {
+            ConsoleLog.logError("Query failed: " + e);
+        }
+    }
+
+    /**
+     *
+     * @param query insert
+     * @param params params[0] = Account ID, params[1] = ID, params[2] = equipment items, params[3] = inventory items.
+     *
+     */
+    private static void processCharacterInsert(String query, Object... params) {
+        try (Connection con = DriverManager.getConnection(url, user, password); PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setInt(1, (Integer) params[0]);
+            pst.setInt(2, (Integer) params[1]);
+            pst.setString(3, (String) params[2]);
+            pst.setString(4, (String) params[3]);
+            pst.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
