@@ -31,7 +31,7 @@ public class ItemFactory {
     public ItemFactory () {
         Json json = new Json();
         ArrayList<JsonValue> list = json.fromJson(ArrayList.class, Gdx.files.internal(ItemScript));
-        items = new Hashtable<String, Item>();
+        items = new Hashtable<>();
 
         for (JsonValue jsonVal : list) {
             Item item = json.readValue(Item.class, jsonVal);

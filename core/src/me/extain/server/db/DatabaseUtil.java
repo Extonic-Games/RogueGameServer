@@ -148,7 +148,7 @@ public class DatabaseUtil {
 
         for (Map.Entry<Integer, Item> entry : character.getInventoryItems().entrySet()) {
             if (entry.getValue() == null)
-                equipItemList.add("");
+                invItemList.add("");
             else
                 invItemList.add(entry.getValue().getItemTypeID());
         }

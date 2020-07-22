@@ -11,15 +11,10 @@ import Utils.ConsoleLog;
 import me.extain.server.objects.Player.Account;
 import me.extain.server.objects.Player.Player;
 import me.extain.server.network.NetworkHandler;
-import me.extain.server.objects.GameObjectManager;
 
 public class RogueGameServer extends ApplicationAdapter {
 
 	private Server server;
-
-	private ServerNetworkListener serverNetworkListener;
-
-	private GameObjectManager gameObjectManager;
 
 	private static RogueGameServer instance = null;
 
@@ -34,14 +29,13 @@ public class RogueGameServer extends ApplicationAdapter {
 
 	public void create() {
 		instance = this;
-		gameObjectManager = new GameObjectManager();
 		server = new Server(1000000, 1000000);
 		this.serverWorld = new ServerWorld(server);
 
 		accounts = new HashMap<>();
 		players = new HashMap<>();
 
-		serverNetworkListener = new ServerNetworkListener(server);
+		ServerNetworkListener serverNetworkListener = new ServerNetworkListener(server);
 		server.start();
 
 		NetworkHandler.register(server);

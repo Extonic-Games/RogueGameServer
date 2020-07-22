@@ -264,6 +264,8 @@ public class GameObject implements Steerable<Vector2> {
         ShootPacket packet = new ShootPacket();
         packet.name = projectile.getName();
         packet.mask = Box2DHelper.BIT_ENEMYPROJ;
+        packet.isSlash = false;
+        packet.lifeSpan = projectile.getLifeSpan();
         packet.id = id;
         packet.x = position.x;
         packet.y = position.y;

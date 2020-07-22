@@ -246,6 +246,49 @@ public class Box2DHelper {
         return body;
     }
 
+    public static Body createSensorBodyRect(float hx, float hy, Vector2 pos, short mask) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(pos);
+
+        Body body = world.createBody(bodyDef);
+
+        PolygonShape box = new PolygonShape();
+        box.setAsBox(hx, hy);
+        //body.createFixture(box, 0f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = box;
+        fixtureDef.restitution = 0f;
+        fixtureDef.friction = 1f;
+        fixtureDef.isSensor = true;
+
+        if (mask == BIT_PLAYER) {
+            fixtureDef.filter.categoryBits = BIT_PLAYER;
+            fixtureDef.filter.maskBits = MASK_PLAYER;
+            //fixtureDef.filter.groupIndex = GROUP_PLAYER;
+        }
+        else if (mask == BIT_ENEMY) {
+            fixtureDef.filter.categoryBits = BIT_ENEMY;
+            fixtureDef.filter.maskBits = MASK_ENEMY;
+            //fixtureDef.filter.groupIndex = GROUP_ENEMY;
+        }
+        else if (mask == BIT_PROJECTILES) {
+            fixtureDef.filter.categoryBits = BIT_PROJECTILES;
+            fixtureDef.filter.maskBits = MASK_PROJECTILES;
+        }
+        else if (mask == BIT_ENEMYPROJ) {
+            fixtureDef.filter.categoryBits = BIT_ENEMYPROJ;
+            fixtureDef.filter.maskBits = MASK_ENEMYPROJ;
+        }
+
+        Fixture fixture = body.createFixture(fixtureDef);
+
+        box.dispose();
+
+        return body;
+    }
+
     public static Body createStaticBody(float hx, float hy, Vector2 pos) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(pos);

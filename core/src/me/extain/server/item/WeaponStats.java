@@ -5,16 +5,18 @@ public class WeaponStats {
     public float damage;
     public float maxDamage;
     public float attackSpeed;
+    public float lifeSpan;
     public String projectile;
 
     public WeaponStats() {
         super();
     }
 
-    public WeaponStats(float damage, float maxDamage, float attackSpeed, String projectile) {
+    public WeaponStats(float damage, float maxDamage, float attackSpeed, float lifeSpan, String projectile) {
         this.damage = damage;
         this.maxDamage = maxDamage;
         this.attackSpeed = attackSpeed;
+        this.lifeSpan = lifeSpan;
         this.projectile = projectile;
     }
 
@@ -28,6 +30,10 @@ public class WeaponStats {
 
     public float getAttackSpeed() {
         return attackSpeed;
+    }
+
+    public float getLifeSpan() {
+        return lifeSpan;
     }
 
     public String getProjectile() {
@@ -44,6 +50,10 @@ public class WeaponStats {
 
     public void setAttackSpeed(float attackSpeed) {
         this.attackSpeed = attackSpeed;
+    }
+
+    public void setLifeSpan(float lifeSpan) {
+        this.lifeSpan = lifeSpan;
     }
 
     public void setProjectile(String projectile) {

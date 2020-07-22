@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 import Utils.ConsoleLog;
+import me.extain.server.Projectile.SwordSlash;
 import me.extain.server.objects.GameObject;
 import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.objects.Player.Account;
@@ -56,20 +57,10 @@ public class PacketHandler {
 
             // Check to see if the player can shoot.
             if (!item.getWeaponStats().getProjectile().equals("") && RogueGameServer.getInstance().getPlayers().get(connection.getID()).isCanShoot()) {
-
-                // Create the projectile, and send it to the clients.
-                Projectile projectile = ProjectileFactory.getInstance().getProjectile(item.getWeaponStats().getProjectile(), new Vector2(packet.x, packet.y), new Vector2(packet.velX, packet.velY), packet.mask);
-                projectile.setMinDamage(item.getWeaponStats().getDamage());
-                projectile.setMaxDamage(item.getWeaponStats().getMaxDamage());
-                packet.name = item.getWeaponStats().getProjectile();
-                packet.damage = projectile.getDamageRange();
-                projectile.shooterID = packet.id;
-
                 // Update the player and let them know they just shot.
-                RogueGameServer.getInstance().getPlayers().get(connection.getID()).shoot(item);
-                if (!Box2DHelper.getWorld().isLocked())
-                    RogueGameServer.getInstance().getServerWorld().getGameObjectManager().getGameObjects().add(projectile);
-                server.sendToAllUDP(packet);
+                ShootPacket sendShoot = RogueGameServer.getInstance().getPlayers().get(connection.getID()).shoot(packet, item);
+
+                server.sendToAllUDP(sendShoot);
             }
         }
     }

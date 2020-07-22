@@ -8,5 +8,7 @@ public class ShootPacket {
     public float x, y;
     public float velX, velY;
     public float damage;
+    public boolean isSlash;
+    public float lifeSpan;
 
 }

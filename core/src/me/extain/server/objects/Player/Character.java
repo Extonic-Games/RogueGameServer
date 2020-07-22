@@ -1,6 +1,7 @@
 package me.extain.server.objects.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import Utils.ConsoleLog;
 import me.extain.server.item.Item;
@@ -17,13 +18,29 @@ public class Character {
     private HashMap<Integer, Item> inventoryItems;
 
     public Character() {
-        equipItems = new HashMap<>();
-        inventoryItems = new HashMap<>();
+        equipItems = new HashMap<>(4);
+        inventoryItems = new HashMap<>(20);
+
+        for (int i = 0; i < 4; i++) {
+            equipItems.put(i, null);
+        }
+
+        for (int i = 0; i < 20; i++) {
+            inventoryItems.put(i + 10, null);
+        }
     }
 
     public Character(int id, int accountID) {
-        equipItems = new HashMap<>();
-        inventoryItems = new HashMap<>();
+        equipItems = new HashMap<>(4);
+        inventoryItems = new HashMap<>(20);
+
+        for (int i = 0; i < 4; i++) {
+            equipItems.put(i, null);
+        }
+
+        for (int i = 0; i < 20; i++) {
+            inventoryItems.put(i + 10, null);
+        }
     }
 
     public void setId(int id) {
@@ -80,6 +97,14 @@ public class Character {
 
     public void removeInventoryItem(int slot) {
         inventoryItems.put(slot, null);
+    }
+
+    public int getOpenInvSlot() {
+
+        for (Map.Entry<Integer, Item> entry : inventoryItems.entrySet())
+            if (entry.getValue() == null) return entry.getKey();
+
+        return -1;
     }
 
     public int getId() {

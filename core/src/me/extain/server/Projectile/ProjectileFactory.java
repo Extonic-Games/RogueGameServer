@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import Utils.ConsoleLog;
 import me.extain.server.Physics.Box2DHelper;
 
 public class ProjectileFactory {
@@ -48,6 +49,19 @@ public class ProjectileFactory {
         projectile.setVelocity(velocity);
 
         return projectile;
+    }
+
+    public SwordSlash getSlash(String name, Vector2 position, Vector2 velocity, short mask) {
+        ProjectileWrapper wrapper = projectiles.get(name);
+
+        SwordSlash slash = new SwordSlash(position, Box2DHelper.createSensorBodyRect(4, 10, position, mask));
+        slash.setObjectName(wrapper.name);
+        slash.setMinDamage(wrapper.damage);
+        slash.setMaxDamage(wrapper.maxDamage);
+        slash.setLifeSpan(wrapper.lifespan);
+        slash.setVelocity(velocity);
+
+        return slash;
     }
 
 

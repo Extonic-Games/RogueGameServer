@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.extain.server.network.command.GiveCommand;
 import me.extain.server.objects.Player.Account;
 import me.extain.server.RogueGameServer;
 import me.extain.server.network.command.BanCommand;
@@ -35,6 +36,7 @@ public class CommandHandler {
         addCommand(new TeleportCommand());
         addCommand(new RankCommand());
         addCommand(new ReloadCommand());
+        addCommand(new GiveCommand());
     }
 
     public void addCommand(Command command) {

@@ -103,4 +103,8 @@ public class Projectile extends GameObject {
     public boolean getDestroy() {
         return this.isDestroy;
     }
+
+    public float getLifeSpan() {
+        return lifeSpan;
+    }
 }
