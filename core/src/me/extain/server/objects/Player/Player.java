@@ -10,8 +10,9 @@ import me.extain.server.objects.GameObject;
 import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.RogueGameServer;
 import me.extain.server.item.Item;
-import me.extain.server.packets.ShootPacket;
-import me.extain.server.packets.UpdatePacket;
+import me.extain.server.network.packets.PlayerStatsPacket;
+import me.extain.server.network.packets.ShootPacket;
+import me.extain.server.network.packets.UpdatePacket;
 
 public class Player extends GameObject {
     private float shootTimer = 20;
@@ -22,6 +23,8 @@ public class Player extends GameObject {
 
     private boolean canShoot = false;
 
+    private PlayerStats playerStats;
+
     public Player(Vector2 position) {
         super(position, Box2DHelper.createDynamicBodyCircle(position, 4f, Box2DHelper.BIT_PLAYER));
 
@@ -30,6 +33,8 @@ public class Player extends GameObject {
         this.getBody().setUserData(this);
 
         this.setSpeed(30);
+
+        playerStats = new PlayerStats();
 
         oldPos = new Vector2(0,0);
 
@@ -56,6 +61,20 @@ public class Player extends GameObject {
         packet.y = getPosition().y;
         packet.health = this.getHealth();
         RogueGameServer.getInstance().getServer().sendToAllUDP(packet);
+
+        if (playerStats.getXp() > playerStats.getXpNeeded())
+            playerStats.calculateLevel();
+
+        if (playerStats.getLastLevel() < playerStats.getLevel()) {
+            playerStats.setLastLevel(playerStats.getLevel());
+
+            PlayerStatsPacket playerStatsPacket = new PlayerStatsPacket();
+            playerStatsPacket.level = playerStats.getLevel();
+            playerStatsPacket.xp = playerStats.getXp();
+            playerStatsPacket.attack = playerStats.getAttack();
+
+            RogueGameServer.getInstance().getServer().sendToUDP(this.getID(), playerStatsPacket);
+        }
     }
 
     public ShootPacket shoot(ShootPacket packet, Item item) {
@@ -63,14 +82,15 @@ public class Player extends GameObject {
         shootTimer = 20 * item.getWeaponStats().getAttackSpeed();
 
         if (item.isSword()) {
-            SwordSlash slash = ProjectileFactory.getInstance().getSlash(packet.name, new Vector2(packet.x, packet.y), new Vector2(packet.velX, packet.velY), Box2DHelper.BIT_PROJECTILES);
+            SwordSlash slash = ProjectileFactory.getInstance().getSlash(item.getWeaponStats().getProjectile(), new Vector2(packet.x, packet.y), new Vector2(packet.velX, packet.velY), Box2DHelper.BIT_PROJECTILES);
             slash.setMaxDamage(item.getWeaponStats().getMaxDamage());
             slash.setMinDamage(item.getWeaponStats().getDamage());
+            slash.setShooterID(packet.id);
             packet.name = item.getWeaponStats().getProjectile();
+            packet.mask = Box2DHelper.BIT_PROJECTILES;
             packet.damage = slash.getDamageRange();
             packet.lifeSpan = item.getWeaponStats().getLifeSpan();
             packet.isSlash = true;
-            slash.shooterID = packet.id;
 
             if (!Box2DHelper.getWorld().isLocked())
                 RogueGameServer.getInstance().getServerWorld().getGameObjectManager().getGameObjects().add(slash);
@@ -78,10 +98,11 @@ public class Player extends GameObject {
             Projectile projectile = ProjectileFactory.getInstance().getProjectile(item.getWeaponStats().getProjectile(), new Vector2(packet.x, packet.y), new Vector2(packet.velX, packet.velY), Box2DHelper.BIT_PROJECTILES);
             projectile.setMinDamage(item.getWeaponStats().getDamage());
             projectile.setMaxDamage(item.getWeaponStats().getMaxDamage());
+            projectile.setShooterID(packet.id);
             packet.name = item.getWeaponStats().getProjectile();
+            packet.mask = Box2DHelper.BIT_PROJECTILES;
             packet.damage = projectile.getDamageRange();
-            packet.lifeSpan = projectile.getLifeSpan();
-            projectile.shooterID = packet.id;
+            packet.lifeSpan = item.getWeaponStats().getLifeSpan();
 
             packet.isSlash = false;
 
@@ -113,5 +134,9 @@ public class Player extends GameObject {
 
     public boolean isCanShoot() {
         return canShoot;
+    }
+
+    public PlayerStats getPlayerStats() {
+        return playerStats;
     }
 }

@@ -1,4 +1,4 @@
-package me.extain.server.packets;
+package me.extain.server.network.packets;
 
 import com.badlogic.gdx.math.Vector2;
 

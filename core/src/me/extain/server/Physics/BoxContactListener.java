@@ -27,17 +27,17 @@ public class BoxContactListener implements ContactListener {
             GameObject object = (GameObject) bodyA.getUserData();
             Projectile projectile = (Projectile) bodyB.getUserData();
 
-            if (!(object instanceof Projectile)) {
+            if (!(object instanceof Projectile) && !fixtureA.isSensor()) {
                 projectile.setDestroy(true);
-                object.onHit(object, projectile.getDamageRange(), projectile.shooterID);
+                object.onHit(object, projectile.getDamageRange(), projectile.getShooterID());
             }
         } else if (bodyA.getUserData() instanceof Projectile && bodyB.getUserData() instanceof GameObject) {
             GameObject object = (GameObject) bodyB.getUserData();
             Projectile projectile = (Projectile) bodyA.getUserData();
 
-            if (!(object instanceof Projectile)) {
+            if (!(object instanceof Projectile) && !fixtureB.isSensor()) {
                 projectile.setDestroy(true);
-                object.onHit(object, projectile.getDamageRange(), projectile.shooterID);
+                object.onHit(object, projectile.getDamageRange(), projectile.getShooterID());
             }
         }
 

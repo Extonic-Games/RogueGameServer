@@ -1,7 +1,7 @@
 [
 {
 	"itemAttributes": 2,
-	"weaponAttributes": 2,
+	"weaponAttributes": 4,
 	"itemUseType": 8,
 	"itemUseTypeValue": 20,
 	"itemTypeID": "stick",
@@ -11,7 +11,7 @@
 		"maxDamage": 10,
 		"damage": 5,
 		"attackSpeed": 2,
-		"lifeSpan": 30,
+		"lifeSpan": 10,
 		"projectile": "Test"
 	}
 },
@@ -36,6 +36,7 @@
 			"maxDamage": 30,
 			"damage": 10,
 			"attackSpeed": 1,
+			"lifeSpan": 10,
 			"projectile": "arrow"
 		}
 	},
@@ -50,7 +51,7 @@
 		"weaponStats": {
 			"maxDamage": 30,
 			"damage": 10,
-			"attackSpeed": 2,
+			"attackSpeed": 0.5,
 			"lifeSpan": 30,
 			"projectile": "sword"
 		}

@@ -1,4 +1,4 @@
-package me.extain.server.packets;
+package me.extain.server.network.packets;
 
 import java.util.ArrayList;
 import me.extain.server.objects.Player.Character;

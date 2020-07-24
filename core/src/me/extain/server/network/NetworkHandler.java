@@ -16,26 +16,28 @@ import java.util.HashMap;
 import me.extain.server.ServerPlayer;
 import me.extain.server.item.Item;
 import me.extain.server.item.WeaponStats;
-import me.extain.server.packets.HelloPacket;
-import me.extain.server.packets.HelloPacketACK;
-import me.extain.server.packets.InventoryUpdatePacket;
-import me.extain.server.packets.JoinPacket;
-import me.extain.server.packets.LoginSuccessPacket;
-import me.extain.server.packets.LoginUserPacket;
-import me.extain.server.packets.LootDropPacket;
-import me.extain.server.packets.MessagePacket;
-import me.extain.server.packets.MovePacket;
-import me.extain.server.packets.MovePacketACK;
-import me.extain.server.packets.NewCharacterAckPacket;
-import me.extain.server.packets.NewCharacterPacket;
-import me.extain.server.packets.NewPlayerPacket;
-import me.extain.server.packets.Packet;
-import me.extain.server.packets.PlayerDisconnected;
-import me.extain.server.packets.RequestObjects;
-import me.extain.server.packets.SendObjectsPacket;
-import me.extain.server.packets.ShootPacket;
-import me.extain.server.packets.UpdatePacket;
+import me.extain.server.network.packets.HelloPacket;
+import me.extain.server.network.packets.HelloPacketACK;
+import me.extain.server.network.packets.InventoryUpdatePacket;
+import me.extain.server.network.packets.JoinPacket;
+import me.extain.server.network.packets.LoginSuccessPacket;
+import me.extain.server.network.packets.LoginUserPacket;
+import me.extain.server.network.packets.LootDropPacket;
+import me.extain.server.network.packets.MessagePacket;
+import me.extain.server.network.packets.MovePacket;
+import me.extain.server.network.packets.MovePacketACK;
+import me.extain.server.network.packets.NewCharacterAckPacket;
+import me.extain.server.network.packets.NewCharacterPacket;
+import me.extain.server.network.packets.NewPlayerPacket;
+import me.extain.server.network.packets.Packet;
+import me.extain.server.network.packets.PlayerDisconnected;
+import me.extain.server.network.packets.PlayerStatsPacket;
+import me.extain.server.network.packets.RequestObjects;
+import me.extain.server.network.packets.SendObjectsPacket;
+import me.extain.server.network.packets.ShootPacket;
+import me.extain.server.network.packets.UpdatePacket;
 import me.extain.server.objects.Player.Character;
+import me.extain.server.objects.Player.PlayerStats;
 
 public class NetworkHandler {
 
@@ -77,6 +79,8 @@ public class NetworkHandler {
         kryo.register(Scaling.class);
         kryo.register(Touchable.class);
         kryo.register(WeaponStats.class);
+        kryo.register(PlayerStatsPacket.class);
+        kryo.register(PlayerStats.class);
     }
 
 }

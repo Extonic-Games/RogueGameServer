@@ -20,9 +20,11 @@ import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.Projectile.Projectile;
 import me.extain.server.RogueGameServer;
 import me.extain.server.map.tiled.TileMap;
-import me.extain.server.packets.LootDropPacket;
-import me.extain.server.packets.ShootPacket;
-import me.extain.server.packets.UpdatePacket;
+import me.extain.server.objects.Player.Player;
+import me.extain.server.network.packets.LootDropPacket;
+import me.extain.server.network.packets.PlayerStatsPacket;
+import me.extain.server.network.packets.ShootPacket;
+import me.extain.server.network.packets.UpdatePacket;
 
 public class GameObject implements Steerable<Vector2> {
 
@@ -134,6 +136,7 @@ public class GameObject implements Steerable<Vector2> {
         lootTable = new HashMap<>();
         lootTable.put(5, "stick");
         lootTable.put(1, "bow");
+        lootTable.put(1, "test-sword");
     }
 
     public void update(float deltaTime) {
@@ -220,9 +223,29 @@ public class GameObject implements Steerable<Vector2> {
 
             if (health <= 0) {
                 calculateLoot(shooterID);
+                calculateExp(shooterID);
                 this.isDestroy = true;
             }
         }
+    }
+
+    private void calculateExp(int shooterID) {
+        Player player = RogueGameServer.getInstance().getPlayers().get(shooterID);
+
+        int playerLevel = player.getPlayerStats().getLevel();
+
+        float randomXP = (MathUtils.random(20f, playerLevel * 20f) * 100) / 100;
+
+        player.getPlayerStats().addXp(randomXP);
+        player.getPlayerStats().calculateLevel();
+
+        PlayerStatsPacket packet = new PlayerStatsPacket();
+        packet.level = player.getPlayerStats().getLevel();
+        packet.xp = player.getPlayerStats().getXp();
+        packet.attack = player.getPlayerStats().getAttack();
+
+        RogueGameServer.getInstance().getServer().sendToUDP(shooterID, packet);
+
     }
 
     private void calculateLoot(int shooterID) {

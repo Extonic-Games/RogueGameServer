@@ -16,6 +16,7 @@ import Utils.ConsoleLog;
 import me.extain.server.objects.Player.Character;
 import me.extain.server.item.Item;
 import me.extain.server.item.ItemFactory;
+import me.extain.server.objects.Player.PlayerStats;
 
 public class DatabaseUtil {
 
@@ -80,6 +81,10 @@ public class DatabaseUtil {
                 Character character = new Character();
                 character.setAccountID(rs.getInt("accountID"));
                 character.setId(rs.getInt("id"));
+                PlayerStats playerStats = new PlayerStats();
+                playerStats.setLevel(rs.getInt("charLevel"));
+                playerStats.setXp(rs.getFloat("charExp"));
+                character.setPlayerStats(playerStats);
                 List<String> equipItems = Arrays.asList(rs.getString("equipItems").split(","));
                 List<String> invItems = Arrays.asList(rs.getString("inventoryItems").split(","));
 
@@ -158,7 +163,7 @@ public class DatabaseUtil {
         String inventoryItems = String.join(",", invItemList);
 
         // Create a sql query with the strings.
-        String query = "UPDATE characters SET equipItems='" + equipItems +"', inventoryItems='" + inventoryItems +"' WHERE id='"+ character.getId() + "'";
+        String query = "UPDATE characters SET charLevel='" + character.getPlayerStats().getLevel()  + "', charExp='" + character.getPlayerStats().getXp() + "', equipItems='" + equipItems +"', inventoryItems='" + inventoryItems +"' WHERE id='"+ character.getId() + "'";
 
         // Process the query
         processQueryUpdate(query);

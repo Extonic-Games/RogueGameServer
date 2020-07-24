@@ -9,17 +9,17 @@ import com.esotericsoftware.kryonet.Server;
 
 import me.extain.server.objects.Player.Player;
 import me.extain.server.db.DatabaseUtil;
-import me.extain.server.packets.HelloPacket;
-import me.extain.server.packets.InventoryUpdatePacket;
-import me.extain.server.packets.JoinPacket;
-import me.extain.server.packets.LoginUserPacket;
-import me.extain.server.packets.MessagePacket;
-import me.extain.server.packets.MovePacket;
-import me.extain.server.packets.NewCharacterPacket;
-import me.extain.server.packets.PacketHandler;
-import me.extain.server.packets.PlayerDisconnected;
-import me.extain.server.packets.RequestObjects;
-import me.extain.server.packets.ShootPacket;
+import me.extain.server.network.packets.HelloPacket;
+import me.extain.server.network.packets.InventoryUpdatePacket;
+import me.extain.server.network.packets.JoinPacket;
+import me.extain.server.network.packets.LoginUserPacket;
+import me.extain.server.network.packets.MessagePacket;
+import me.extain.server.network.packets.MovePacket;
+import me.extain.server.network.packets.NewCharacterPacket;
+import me.extain.server.network.PacketHandler;
+import me.extain.server.network.packets.PlayerDisconnected;
+import me.extain.server.network.packets.RequestObjects;
+import me.extain.server.network.packets.ShootPacket;
 
 
 public class ServerNetworkListener extends Listener {
@@ -53,6 +53,7 @@ public class ServerNetworkListener extends Listener {
     }
 
     public void disconnected(Connection c) {
+        RogueGameServer.getInstance().getAccounts().get(c.getID()).getSelectedChar().setPlayerStats(RogueGameServer.getInstance().getPlayers().get(c.getID()).getPlayerStats());
         RogueGameServer.getInstance().removePlayer(c.getID());
         PlayerDisconnected playerDisconnected = new PlayerDisconnected();
         playerDisconnected.id = c.getID();

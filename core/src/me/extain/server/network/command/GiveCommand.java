@@ -1,14 +1,12 @@
 package me.extain.server.network.command;
 
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-
 import me.extain.server.RogueGameServer;
 import me.extain.server.item.Item;
 import me.extain.server.item.ItemFactory;
 import me.extain.server.objects.Player.Account;
 import me.extain.server.objects.Player.Character;
-import me.extain.server.packets.InventoryUpdatePacket;
-import me.extain.server.packets.MessagePacket;
+import me.extain.server.network.packets.InventoryUpdatePacket;
+import me.extain.server.network.packets.MessagePacket;
 
 public class GiveCommand implements Command {
     @Override
@@ -56,6 +54,12 @@ public class GiveCommand implements Command {
 
                 RogueGameServer.getInstance().getServer().sendToUDP(account.getConnectionID(), packet);
             }
+        }else {
+            MessagePacket packet = new MessagePacket();
+            packet.username = "[ORANGE]Server[]";
+            packet.message = "Item: " + item + ", not found!";
+
+            RogueGameServer.getInstance().getServer().sendToUDP(account.getConnectionID(), packet);
         }
     }
 

@@ -1,17 +1,29 @@
-package me.extain.server.packets;
+package me.extain.server.network;
 
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 import Utils.ConsoleLog;
-import me.extain.server.Projectile.SwordSlash;
+import me.extain.server.network.packets.HelloPacket;
+import me.extain.server.network.packets.HelloPacketACK;
+import me.extain.server.network.packets.InventoryUpdatePacket;
+import me.extain.server.network.packets.JoinPacket;
+import me.extain.server.network.packets.LoginSuccessPacket;
+import me.extain.server.network.packets.LoginUserPacket;
+import me.extain.server.network.packets.MessagePacket;
+import me.extain.server.network.packets.MovePacket;
+import me.extain.server.network.packets.NewCharacterAckPacket;
+import me.extain.server.network.packets.NewCharacterPacket;
+import me.extain.server.network.packets.NewPlayerPacket;
+import me.extain.server.network.packets.RequestObjects;
+import me.extain.server.network.packets.SendObjectsPacket;
+import me.extain.server.network.packets.ShootPacket;
 import me.extain.server.objects.GameObject;
 import me.extain.server.Physics.Box2DHelper;
 import me.extain.server.objects.Player.Account;
 import me.extain.server.objects.Player.Player;
 import me.extain.server.Projectile.Projectile;
-import me.extain.server.Projectile.ProjectileFactory;
 import me.extain.server.RogueGameServer;
 import me.extain.server.ServerPlayer;
 import me.extain.server.db.DatabaseUtil;

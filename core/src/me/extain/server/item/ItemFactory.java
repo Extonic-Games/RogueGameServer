@@ -40,7 +40,10 @@ public class ItemFactory {
     }
 
     public Item getItem(String name) {
-        return new Item(items.get(name));
+        if (items.get(name) != null)
+            return new Item(items.get(name));
+        else
+            return null;
     }
 
     public void reload() {

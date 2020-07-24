@@ -19,13 +19,13 @@ public class Projectile extends GameObject {
 
     public short projectileMask = Box2DHelper.BIT_PROJECTILES;
 
-    private float lifeSpan = 6 * 16;
+    private float lifeSpan = 10;
 
     private boolean faceUp, faceLeft, faceDown, faceRight;
 
     public Sprite sprite;
 
-    public int shooterID;
+    private int shooterID;
 
 
     public Projectile(Vector2 position, Body body) {
@@ -106,5 +106,13 @@ public class Projectile extends GameObject {
 
     public float getLifeSpan() {
         return lifeSpan;
+    }
+
+    public int getShooterID() {
+        return shooterID;
+    }
+
+    public void setShooterID(int shooterID) {
+        this.shooterID = shooterID;
     }
 }

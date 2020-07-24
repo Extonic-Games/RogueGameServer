@@ -2,7 +2,7 @@ package me.extain.server.network.command;
 
 import me.extain.server.objects.Player.Account;
 import me.extain.server.RogueGameServer;
-import me.extain.server.packets.MessagePacket;
+import me.extain.server.network.packets.MessagePacket;
 
 public class TestCommand implements Command {
     @Override

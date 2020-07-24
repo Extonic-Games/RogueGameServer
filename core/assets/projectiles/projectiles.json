@@ -21,6 +21,6 @@
     "name": "sword",
     "damage": 10,
     "maxDamage": 40,
-    "lifespan": 60
+    "lifespan": 10
   }
 ]

@@ -17,6 +17,8 @@ public class Character {
     private HashMap<Integer, Item> equipItems;
     private HashMap<Integer, Item> inventoryItems;
 
+    private PlayerStats playerStats;
+
     public Character() {
         equipItems = new HashMap<>(4);
         inventoryItems = new HashMap<>(20);
@@ -28,6 +30,8 @@ public class Character {
         for (int i = 0; i < 20; i++) {
             inventoryItems.put(i + 10, null);
         }
+
+        playerStats = new PlayerStats();
     }
 
     public Character(int id, int accountID) {
@@ -41,6 +45,8 @@ public class Character {
         for (int i = 0; i < 20; i++) {
             inventoryItems.put(i + 10, null);
         }
+
+        playerStats = new PlayerStats();
     }
 
     public void setId(int id) {
@@ -113,6 +119,14 @@ public class Character {
 
     public int getAccountID() {
         return accountID;
+    }
+
+    public PlayerStats getPlayerStats() {
+        return playerStats;
+    }
+
+    public void setPlayerStats(PlayerStats playerStats) {
+        this.playerStats = playerStats;
     }
 }
 

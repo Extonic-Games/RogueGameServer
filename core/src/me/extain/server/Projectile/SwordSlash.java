@@ -9,8 +9,6 @@ import me.extain.server.objects.GameObject;
 
 public class SwordSlash extends Projectile {
 
-    private float lifeSpan;
-
     public SwordSlash(Vector2 pos, Body body) {
         super(pos, body);
 
@@ -18,20 +16,16 @@ public class SwordSlash extends Projectile {
     }
 
     public void update(float deltaTime) {
+        float lifeSpan = getLifeSpan();
 
-        if (lifeSpan != 0) lifeSpan --;
+        if (lifeSpan != 0)  setLifeSpan(lifeSpan--);
 
-        if (lifeSpan == 0) this.setDestroy(true);
+        if (lifeSpan == 0) setDestroy(true);
 
         float angle = MathUtils.atan2(this.getVelocity().y, this.getVelocity().x) * MathUtils.radiansToDegrees;
 
         this.getPosition().set(this.getBody().getPosition());
 
         this.getBody().setTransform(this.getPosition(), angle * MathUtils.degreesToRadians);
-    }
-
-    @Override
-    public void setLifeSpan(float lifeSpan) {
-        this.lifeSpan = lifeSpan;
     }
 }

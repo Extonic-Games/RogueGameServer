@@ -5,7 +5,7 @@ import java.util.Map;
 import me.extain.server.objects.Player.Account;
 import me.extain.server.RogueGameServer;
 import me.extain.server.db.DatabaseUtil;
-import me.extain.server.packets.MessagePacket;
+import me.extain.server.network.packets.MessagePacket;
 
 public class BanCommand implements Command {
     @Override

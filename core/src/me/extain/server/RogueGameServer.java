@@ -6,8 +6,10 @@ import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import Utils.ConsoleLog;
+import me.extain.server.db.DatabaseUtil;
 import me.extain.server.objects.Player.Account;
 import me.extain.server.objects.Player.Player;
 import me.extain.server.network.NetworkHandler;
@@ -57,6 +59,13 @@ public class RogueGameServer extends ApplicationAdapter {
 
 	public void update(float delta) {
 		serverWorld.update();
+	}
+
+	@Override
+	public void dispose() {
+		for (Map.Entry<Integer, Account> entry : accounts.entrySet()) {
+			DatabaseUtil.saveCharacter(entry.getValue().getSelectedChar());
+		}
 	}
 
 	public Server getServer() {

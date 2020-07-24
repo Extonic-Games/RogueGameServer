@@ -18,7 +18,7 @@ import me.extain.server.network.command.RankCommand;
 import me.extain.server.network.command.ReloadCommand;
 import me.extain.server.network.command.TeleportCommand;
 import me.extain.server.network.command.TestCommand;
-import me.extain.server.packets.MessagePacket;
+import me.extain.server.network.packets.MessagePacket;
 
 public class CommandHandler {
 
@@ -81,6 +81,7 @@ public class CommandHandler {
 
         MessagePacket packet = new MessagePacket();
         packet.username = "[ORANGE]Server[]";
+
         packet.message = String.join(", ", availCommands);
 
         RogueGameServer.getInstance().getServer().sendToUDP(account.getConnectionID(), packet);
